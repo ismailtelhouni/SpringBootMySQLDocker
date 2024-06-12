@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  # database service layer for my project Spring >> mysql database
+  mysqldb:
+    image: mysql:8.0.13
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    volumes:
+      - springMysqlVolume:/var/lib/mysql
+  phpmyadmindb:
+    depends_on:
+      - mysqldb
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysqldb
+      MYSQL_ROOT_PASSWORD: root
+  springboot-mysql-docker:
+    depends_on:
+      - mysqldb
+    image: spring-mysql-docker
+    restart: always
+    ports:
+      - "9090:8080"
+    environment:
+      MYSQL_HOST: mysqldb
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_PORT: 3306
+volumes:
+  springMysqlVolume: {}
